@@ -13,6 +13,11 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/api/v1/user", userRouter);
+app.all("/", (req, res) => {
+  res.send("hello world")
+});
+
+
 
 const PORT = process.env.PORT || 8000;
 

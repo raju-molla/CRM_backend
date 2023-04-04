@@ -16,6 +16,7 @@ app.use("/api/v1/user", userRouter);
 
 const PORT = process.env.PORT || 8000;
 
+
 // Database connection
 const DB = process.env.DATABASE.replace(
   "<PASSWORD>",

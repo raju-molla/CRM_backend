@@ -63,7 +63,7 @@ exports.login = async (req, res) => {
         res.cookie("jwt", token, {
           expires: new Date(Date.now() + 2592000000),
           httpOnly: true,
-          secure: true,
+          // secure: true,
           sameSite: "None",
         });
 
@@ -157,6 +157,26 @@ exports.currentLoginUser = async (req, res) => {
       status: "success",
       data: freshUser,
       message: "Here you go!",
+    });
+  } catch (err) {
+    return res.status(404).json({
+      status: "fail",
+      data: err,
+      message: err.message,
+    });
+  }
+};
+
+// LOG-OUT
+
+exports.logOut = async (req, res) => {
+  try {
+    res.clearCookie("jwt");
+    await req.user.save();
+    res.status(200).json({
+      status: "success",
+      data: "",
+      message: "logout successfully!",
     });
   } catch (err) {
     return res.status(404).json({

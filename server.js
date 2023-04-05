@@ -9,7 +9,7 @@ dotenv.config({ path: "./config.env" });
 // cors setup
 app.use(
   cors({
-    origin: "http://localhost:8000" || "127.0.0.1:8000",
+    origin: "http://localhost:3000",
   })
 );
 

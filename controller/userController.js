@@ -171,8 +171,14 @@ exports.currentLoginUser = async (req, res) => {
 
 exports.logOut = async (req, res) => {
   try {
-    res.clearCookie("jwt");
-    await req.user.save();
+    res.cookie("jwt", null, {
+      expires: new Date(Date.now()),
+      httpOnly: true,
+      sameSite: "none",
+      secure: true,
+  });
+
+  res.clearCookie("jwt");
     res.status(200).json({
       status: "success",
       data: "",

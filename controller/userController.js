@@ -57,7 +57,12 @@ exports.login = async (req, res) => {
         const token = jwt.sign(data, process.env.SECREK_KEY, {
           expiresIn: "30d",
         });
-        res.cookie("jwt", token, { httpOnly: true, secure: true });
+        res.cookie("jwt", token, {
+          expires: new Date(Date.now() + 2592000000),
+          httpOnly: true,
+          // secure: true,
+          sameSite: "None",
+        });
 
         // Send a response with the user object
         res.status(200).json({
@@ -72,7 +77,7 @@ exports.login = async (req, res) => {
           message: "password is not match!",
         });
       }
-      console.log(res.cookies.token);
+      // console.log(res.cookies.token);
     } else {
       return res.status(404).json({
         status: "fail",

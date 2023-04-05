@@ -1,6 +1,8 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { promisify } = require("util");
+const { changePasswordAfter } = require("../utils/repeatFun");
 
 // SIGN UP
 
@@ -9,16 +11,17 @@ exports.signUp = async (req, res) => {
     const { name, email_primary, mobile, password, confirm_password } =
       req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
-    // req.body.password = hashedPassword;
-    // console.log(re);
+
     const user = new User({
       name,
       email_primary,
       mobile,
       password: hashedPassword,
       confirm_password,
+      passwordChangeAt: new Date(),
     });
 
+    // console.log(user);
     await user.save();
     return res.status(201).json({
       status: "success",
@@ -60,7 +63,7 @@ exports.login = async (req, res) => {
         res.cookie("jwt", token, {
           expires: new Date(Date.now() + 2592000000),
           httpOnly: true,
-          // secure: true,
+          secure: true,
           sameSite: "None",
         });
 
@@ -92,6 +95,49 @@ exports.login = async (req, res) => {
       message: err.message,
     });
   }
+};
+
+// PROTECT
+
+exports.protect = async (req, res, next) => {
+  try {
+    let cookies = req.cookies.jwt;
+    // console.log(cookies);
+    if (!cookies) {
+      return res.status(404).json({
+        message: "please login first",
+      });
+    }
+    const decoded = jwt.verify(cookies, process.env.SECREK_KEY);
+    // console.log(decoded);
+    const freshUser = await User.findById(decoded.data._id);
+    console.log(freshUser);
+    if (!freshUser) {
+      return res.status(404).json({
+        message: "The user belongingto this token doest no longer exit",
+      });
+    }
+    if (changePasswordAfter(freshUser.passwordChangeAt, decoded.iat)) {
+      return res.status(404).json({
+        message: "password changed!",
+      });
+    }
+
+    req.user = freshUser;
+    next();
+  } catch (err) {
+    return res.status(404).json({
+      status: "fail",
+      data: err,
+      message: err.message,
+    });
+  }
+};
+
+// GET ALL USER
+exports.getAllUser = async (req, res) => {
+  const users = await User.find();
+  return res.send(users);
 };
 
 // USER UPDATE

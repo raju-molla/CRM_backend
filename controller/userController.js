@@ -144,13 +144,13 @@ exports.getAllUser = async (req, res) => {
 
 exports.currentLoginUser = async (req, res) => {
   try {
-    const cookies = req.cookies.jwt;
-    if (!cookies) {
+    const { jwt } = req.cookies;
+    if (!jwt) {
       return res.status(404).json({
         message: "please login first",
       });
     }
-    const decoded = jwt.verify(cookies, process.env.SECREK_KEY);
+    const decoded = jwt.verify(jwt, process.env.SECREK_KEY);
     // console.log(decoded);
     const freshUser = await User.findById(decoded.data._id);
     return res.status(200).json({
@@ -176,9 +176,8 @@ exports.logOut = async (req, res) => {
       httpOnly: true,
       sameSite: "none",
       secure: true,
-  });
-
-  res.clearCookie("jwt");
+    });
+    res.clearCookie("jwt");
     res.status(200).json({
       status: "success",
       data: "",

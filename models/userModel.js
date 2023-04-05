@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema({
   },
   email_primary: {
     type: String,
+    unique: true,
   },
   email_secondary: {
     type: String,
@@ -54,7 +55,7 @@ const userSchema = new mongoose.Schema({
       ref: "tasks",
     },
   ],
-  passwordChangeAt: Date
+  passwordChangeAt: Date,
 });
 
 const user = mongoose.model("user", userSchema);

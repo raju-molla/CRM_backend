@@ -17,7 +17,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
-      "https://crm-frontend-test-rouge.vercel.app/login",
+      "https://crm-frontend-test-rouge.vercel.app",
     ],
 
     credentials: true,

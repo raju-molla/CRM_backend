@@ -7,16 +7,19 @@ const cors = require("cors");
 dotenv.config({ path: "./config.env" });
 
 // cors setup
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-  })
-);
 
 // IMPORT ALL ROUTER
 const userRouter = require("./routers/userRoutes");
 
 const app = express();
+
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 app.use(cookieParser());
 

@@ -140,4 +140,31 @@ exports.getAllUser = async (req, res) => {
   return res.send(users);
 };
 
+// CURRENT LOG IN USER
+
+exports.currentLoginUser = async (req, res) => {
+  try {
+    const cookies = req.cookies.jwt;
+    if (!cookies) {
+      return res.status(404).json({
+        message: "please login first",
+      });
+    }
+    const decoded = jwt.verify(cookies, process.env.SECREK_KEY);
+    // console.log(decoded);
+    const freshUser = await User.findById(decoded.data._id);
+    return res.status(200).json({
+      status: "success",
+      data: freshUser,
+      message: "Here you go!",
+    });
+  } catch (err) {
+    return res.status(404).json({
+      status: "fail",
+      data: err,
+      message: err.message,
+    });
+  }
+};
+
 // USER UPDATE

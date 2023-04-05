@@ -2,8 +2,16 @@ const express = require("express");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 var cookieParser = require("cookie-parser");
+const cors = require("cors");
 
 dotenv.config({ path: "./config.env" });
+
+// cors setup
+app.use(
+  cors({
+    origin: "http://localhost:8000" || "127.0.0.1:8000",
+  })
+);
 
 // IMPORT ALL ROUTER
 const userRouter = require("./routers/userRoutes");
@@ -15,13 +23,10 @@ app.use(cookieParser());
 app.use("/api/v1/user", userRouter);
 
 app.all("/", (req, res) => {
-  res.send("hello world")
+  res.send("hello world");
 });
 
-
-
 const PORT = process.env.PORT || 8000;
-
 
 // Database connection
 const DB = process.env.DATABASE.replace(

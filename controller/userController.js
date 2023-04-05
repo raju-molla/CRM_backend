@@ -64,7 +64,7 @@ exports.login = async (req, res) => {
           expires: new Date(Date.now() + 2592000000),
           httpOnly: true,
           secure: true,
-          sameSite: "None",
+          sameSite: "none",
         });
 
         // Send a response with the user object
